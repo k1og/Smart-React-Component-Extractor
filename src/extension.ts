@@ -1,23 +1,50 @@
 // The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { parse } from './parser';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "react-component-extractor" is now active!');
-
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
+	let disposable = vscode.commands.registerCommand('extension.extractReactComponent', () => {
+		const editor = vscode.window.activeTextEditor;
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World!');
+		const selection = editor?.selection;
+		const selectedText = editor?.document.getText(selection);
+
+		if (!selectedText) {
+			vscode.window.showErrorMessage('No text selected');
+			return; 
+		}
+
+		// Prompt for new component Name
+		const options = {
+			prompt: 'Enter a component name',
+			placeHolder: 'MyComponent'
+		};
+
+		vscode.window.showInputBox(options).then(value => {
+			if (!value) {
+				vscode.window.showErrorMessage('No component name');
+				return; 
+			}
+			
+			const spaceFreeValue = value.replace(/ /g, '');
+			const newComponentName = spaceFreeValue[0].toUpperCase() + spaceFreeValue.slice(1);
+			const newComponentFileName = spaceFreeValue;
+			const newComponentInfo = parse(selectedText);
+			const newComponentContent = `
+			import React from 'react'
+
+			export const ${newComponentName} = (${newComponentInfo.props?.join(', ')}) => (
+				${selectedText}
+			)
+			`;
+			console.log(newComponentContent);
+		});
 	});
 
 	context.subscriptions.push(disposable);
