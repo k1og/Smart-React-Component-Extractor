@@ -70,6 +70,6 @@ export const parseImports = (componentContent: string): ParseImportsResult => {
             destructingImports: destructingImportsInfo.map(specifier => specifier.local.name),
             // @ts-ignore
             from: body.source.value
-        })
-});
+        });
+    });
 };
