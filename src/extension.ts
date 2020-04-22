@@ -1,6 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 import * as vscode from 'vscode';
-import { parse } from './parser';
+import { parseJSX, parseImports, ImportType } from './parser';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -22,16 +22,10 @@ export function activate(context: vscode.ExtensionContext) {
 		const selectedText = editor.document.getText(selection);
 
 		if (!selectedText) {
-			vscode.window.showErrorMessage('No text selected');
-			return; 
+			return vscode.window.showErrorMessage('No text selected');
 		}
-
-		let folderPath = path.dirname(editor.document.fileName); // get the open folder path
-
-		// Check if folder is in workspace
-		if (folderPath === '.') {
-			return vscode.window.showErrorMessage("Your file must be in a workspace");
-		}
+		const fileContent = editor.document.getText();
+		const folderPath = path.dirname(editor.document.fileName); // get the open folder path
 
 		// Prompt for new component Name
 		const options = {
@@ -47,16 +41,35 @@ export function activate(context: vscode.ExtensionContext) {
 			const spaceFreeValue = value.replace(/ /g, '');
 			const newComponentName = spaceFreeValue[0].toUpperCase() + spaceFreeValue.slice(1);
 			const newComponentFileName = spaceFreeValue;
-			const newComponentInfo = parse(selectedText);
-			const newComponentContent = `
-			import React from 'react'
+			const newComponentInfo = parseJSX(selectedText);
+			const fileContentImportsInfo = parseImports(fileContent);
+			const newComponentImportsInfo = fileContentImportsInfo
+				?.map(importInfo => ({
+					...importInfo,
+					destructingImports: importInfo.destructingImports.filter((importName) => newComponentInfo.components?.findIndex(component => component === importName) !== -1),
+					defaultImport: newComponentInfo.components?.find(component => component === importInfo.defaultImport)
+				}))
+				.filter(importInfo => importInfo.defaultImport !== undefined || importInfo.destructingImports.length > 0);
 
-			export const ${newComponentName} = (${newComponentInfo.props?.join(', ')}) => (
-				${selectedText}
-			)
-			`;
+			const newComponentContent = 
+`import React from 'react'
+${newComponentImportsInfo?.map(({defaultImport, destructingImports, from}) => {
+	if (defaultImport) {
+		return 'import ' + defaultImport + ', { ' + destructingImports.join(', ') + " } from '" + from + "'";
+	} else {
+		return 'import { ' + destructingImports.join(', ') + " } from '" + from + "'";
+	}
+}).join('\n')}
+
+export const ${newComponentName} = ({${newComponentInfo.props?.join(', ')}}) => (
+	${selectedText}
+)
+`;
 			
-			editor.edit(builder => builder.replace(selection, `<${newComponentName} ${newComponentInfo.props?.map(prop => prop + '={' + prop + '}').join(' ')}/>`))
+			editor.edit(builder => {
+				builder.replace(selection, `<${newComponentName} ${newComponentInfo.props?.map(prop => prop + '={' + prop + '}').join(' ')}/>`);
+				builder.insert(new vscode.Position(0, 0), `import { ${newComponentName} } from './${newComponentFileName}'\n`);
+			})
 				.then(() => {
 					fs.writeFile(path.join(folderPath, `${newComponentFileName}.jsx`), newComponentContent, (err) => {
 						if (err) {
