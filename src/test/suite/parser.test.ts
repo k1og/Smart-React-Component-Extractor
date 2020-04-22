@@ -76,8 +76,11 @@ suite('Parser Test Suite', () => {
             <div style={{backgroundColor: 'red'}}>
                 <p>Hello world</p>
             </div>
+            <div style={{backgroundColor}}>
+                <p>Hello world</p>
+            </div>
         `;
-        assert.deepStrictEqual(parse(comp), {components: undefined, props: ['color']});
+        assert.deepStrictEqual(parse(comp), {components: undefined, props: ['color', 'backgroundColor']});
     });
 
     test('Ignore true', () => {
