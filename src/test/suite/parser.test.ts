@@ -70,11 +70,14 @@ suite('Parser Test Suite', () => {
 
     test('Object prop', () => {
         const comp = `
+            <div style={{backgroundColor: color}}>
+                <p>Hello world</p>
+            </div>
             <div style={{backgroundColor: 'red'}}>
                 <p>Hello world</p>
             </div>
         `;
-        assert.deepStrictEqual(parse(comp), {components: undefined, props: undefined});
+        assert.deepStrictEqual(parse(comp), {components: undefined, props: ['color']});
     });
 
     test('Ignore true', () => {
