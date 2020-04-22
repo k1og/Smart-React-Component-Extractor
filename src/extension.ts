@@ -56,7 +56,11 @@ export function activate(context: vscode.ExtensionContext) {
 `import React from 'react'
 ${newComponentImportsInfo?.map(({defaultImport, destructingImports, from}) => {
 	if (defaultImport) {
-		return 'import ' + defaultImport + ', { ' + destructingImports.join(', ') + " } from '" + from + "'";
+		if (destructingImports.length > 0) {
+			return 'import ' + defaultImport + ', { ' + destructingImports.join(', ') + " } from '" + from + "'";
+		} else {
+			return 'import ' + defaultImport + " from '" + from + "'";
+		}
 	} else {
 		return 'import { ' + destructingImports.join(', ') + " } from '" + from + "'";
 	}

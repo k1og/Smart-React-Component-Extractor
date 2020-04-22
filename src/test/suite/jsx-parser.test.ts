@@ -37,8 +37,19 @@ suite('JSX Parser Test Suite', () => {
             <Image src={image}/>
             <Modal/>
             <Modal />
+            <TextField
+                autoComplete="off"
+                error={!!errors.name}
+                helperText={errors.name}
+                id="name-input"
+                name="name"
+                label="Название организации"
+                value={values.name}
+                onChange={handleChange}
+                className={classes.textFullWidth}
+            />
         `;
-		assert.deepStrictEqual(parseJSX(comp), {components: ['Image', 'Modal'], props: ['image']});
+		assert.deepStrictEqual(parseJSX(comp), {components: ['Image', 'Modal', 'TextField'], props: ['image', 'errors', 'values', 'handleChange', 'classes']});
     });
     
     test('No props', () => {
@@ -121,7 +132,7 @@ suite('JSX Parser Test Suite', () => {
             <Title value={name ? \`Hello \${name}\` : 'Hello, stranger'} />
             <Button color={darkTheme ? black : white} />
         `;
-        assert.deepStrictEqual(parseJSX(comp), {components: ['Button', 'Title'], props: ['name', 'darkTheme', 'black', 'white']});
+        assert.deepStrictEqual(parseJSX(comp), {components: ['Title', 'Button'], props: ['name', 'darkTheme', 'black', 'white']});
     });
 
 });

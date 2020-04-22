@@ -17,7 +17,7 @@ export enum ImportType {
 }
 
 export const parseJSX = (componentBody: string): PraseJSXResult => {
-    const components = componentBody.match(/<[A-Z][^ |>|\/]*/g)?.map(c => c.slice(1)).filter((c, i, arr) => arr.indexOf(c) === i);
+    const components = componentBody.match(/<[A-Z][^ |\r?\n|\r|>|\/]*/g)?.map(c => c.slice(1)).filter((c, i, arr) => arr.indexOf(c) === i);
     let props = componentBody
         .match(/{+[^}]+}+/g)
         ?.map(p => p.slice(1, -1).trim())
