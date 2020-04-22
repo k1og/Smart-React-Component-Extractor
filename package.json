@@ -1,8 +1,8 @@
 {
-	"name": "react-component-extractor",
-	"displayName": "React Component Extractor",
+	"name": "react-smart-component-extractor",
+	"displayName": "React Smart Component Extractor",
 	"description": "Extract the selected code to a new component",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"engines": {
 		"vscode": "^1.42.0"
 	},

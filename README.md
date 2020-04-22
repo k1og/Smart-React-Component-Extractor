@@ -1,6 +1,6 @@
-# react-component-extractor README
+# react-smart-component-extractor README
 
-This is the README for your extension "react-component-extractor". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "react-smart-component-extractor". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 
