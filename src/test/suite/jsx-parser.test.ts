@@ -1,7 +1,7 @@
 import * as assert from 'assert';
-import { parse } from '../../parser';
+import { parseJSX } from '../../parser';
 
-suite('Parser Test Suite', () => {
+suite('JSX Parser Test Suite', () => {
 	test('No html tags', () => {
         const comp = `
             <button>Click</button>
@@ -12,7 +12,7 @@ suite('Parser Test Suite', () => {
         
             <StyledSpan onClick={handleNameClick}>{name}</StyledSpan>
         `;
-        assert.deepStrictEqual(parse(comp), {components: ['Button', 'StyledSpan'], props: ['handleButtonClick', 'title', 'handleNameClick', 'name']});
+        assert.deepStrictEqual(parseJSX(comp), {components: ['Button', 'StyledSpan'], props: ['handleButtonClick', 'title', 'handleNameClick', 'name']});
     });
     
     test('No duplicates', () => {
@@ -29,7 +29,7 @@ suite('Parser Test Suite', () => {
 
             <Button onClick={handleClick}>{title}</Button>
         `;
-		assert.deepStrictEqual(parse(comp), {components: ['Button', 'StyledSpan'], props: ['handleClick', 'title', 'name']});
+		assert.deepStrictEqual(parseJSX(comp), {components: ['Button', 'StyledSpan'], props: ['handleClick', 'title', 'name']});
     });
     
     test('Self closing components', () => {
@@ -38,7 +38,7 @@ suite('Parser Test Suite', () => {
             <Modal/>
             <Modal />
         `;
-		assert.deepStrictEqual(parse(comp), {components: ['Image', 'Modal'], props: ['image']});
+		assert.deepStrictEqual(parseJSX(comp), {components: ['Image', 'Modal'], props: ['image']});
     });
     
     test('No props', () => {
@@ -47,7 +47,7 @@ suite('Parser Test Suite', () => {
                 <Text>Hello world</Text>
             </View>
         `;
-        assert.deepStrictEqual(parse(comp), {components: ['View', 'Text'], props: undefined});
+        assert.deepStrictEqual(parseJSX(comp), {components: ['View', 'Text'], props: undefined});
     });
     
     test('No react components', () => {
@@ -56,7 +56,7 @@ suite('Parser Test Suite', () => {
                 <p>Hello world</p>
             </div>
         `;
-        assert.deepStrictEqual(parse(comp), {components: undefined, props: ['title']});
+        assert.deepStrictEqual(parseJSX(comp), {components: undefined, props: ['title']});
     });
 
     test('No react components and props', () => {
@@ -65,7 +65,7 @@ suite('Parser Test Suite', () => {
                 <p>Hello world</p>
             </div>
         `;
-        assert.deepStrictEqual(parse(comp), {components: undefined, props: undefined});
+        assert.deepStrictEqual(parseJSX(comp), {components: undefined, props: undefined});
     });
 
     test('Object prop', () => {
@@ -80,14 +80,14 @@ suite('Parser Test Suite', () => {
                 <p>Hello world</p>
             </div>
         `;
-        assert.deepStrictEqual(parse(comp), {components: undefined, props: ['color', 'backgroundColor']});
+        assert.deepStrictEqual(parseJSX(comp), {components: undefined, props: ['color', 'backgroundColor']});
     });
 
     test('Ignore true', () => {
         const comp = `
             <button disabled={true} > Disabled button</button>
         `;
-        assert.deepStrictEqual(parse(comp), {components: undefined, props: undefined});
+        assert.deepStrictEqual(parseJSX(comp), {components: undefined, props: undefined});
     });
 
     test('Object property prop', () => {
@@ -96,14 +96,14 @@ suite('Parser Test Suite', () => {
             <span error={styles.general.span} > Disabled button</button>
 
         `;
-        assert.deepStrictEqual(parse(comp), {components: undefined, props: ['errors', 'styles']});
+        assert.deepStrictEqual(parseJSX(comp), {components: undefined, props: ['errors', 'styles']});
     });
 
     test('Template string prop', () => {
         const comp = `
             <Button title={\`Hello \${name}\`!} />
         `;
-        assert.deepStrictEqual(parse(comp), {components: ['Button'], props: ['name']});
+        assert.deepStrictEqual(parseJSX(comp), {components: ['Button'], props: ['name']});
     });
 
     test('String prop', () => {
@@ -113,7 +113,15 @@ suite('Parser Test Suite', () => {
             <Input label={'hi'} />
             <Input label={"hi"} />
         `;
-        assert.deepStrictEqual(parse(comp), {components: ['Button', 'Input'], props: undefined});
+        assert.deepStrictEqual(parseJSX(comp), {components: ['Button', 'Input'], props: undefined});
+    });
+
+    test('String prop', () => {
+        const comp = `
+            <Title value={name ? \`Hello \${name}\` : 'Hello, stranger'} />
+            <Button color={darkTheme ? black : white} />
+        `;
+        assert.deepStrictEqual(parseJSX(comp), {components: ['Button', 'Title'], props: ['name', 'darkTheme', 'black', 'white']});
     });
 
 });

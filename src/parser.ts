@@ -1,12 +1,23 @@
 import * as esprima from 'esprima';
 
-interface PraseResult {
+interface PraseJSXResult {
     props?: Array<string>
     components?: Array<string>
 }
 
-export const parse = (componentBody: string): PraseResult => {
-    let components = componentBody.match(/<[A-Z][^ |>|\/]*/g)?.map(c => c.slice(1)).filter((c, i, arr) => arr.indexOf(c) === i);
+type ParseImportsResult = Array<{
+    defaultImport?: string
+    destructingImports: Array<string>
+    from: string
+}> | undefined;
+
+export enum ImportType {
+    DEFAULT,
+    DESTRUCTURING
+}
+
+export const parseJSX = (componentBody: string): PraseJSXResult => {
+    const components = componentBody.match(/<[A-Z][^ |>|\/]*/g)?.map(c => c.slice(1)).filter((c, i, arr) => arr.indexOf(c) === i);
     let props = componentBody
         .match(/{+[^}]+}+/g)
         ?.map(p => p.slice(1, -1).trim())
@@ -33,7 +44,7 @@ export const parse = (componentBody: string): PraseResult => {
                         isObjectKey = false;
                     }
                 }
-                return t.type === 'Identifier' && (!previousValueIsObjectProperty && !isObjectKey);
+                return t.type === esprima.Syntax.Identifier && (!previousValueIsObjectProperty && !isObjectKey);
             })
             .map(p => p.value)
         )
@@ -41,4 +52,24 @@ export const parse = (componentBody: string): PraseResult => {
         .filter((p, i, arr) => arr.indexOf(p) === i);
     props = props && props.length > 0 ? props : undefined;
     return { components, props };
+};
+
+export const parseImports = (componentContent: string): ParseImportsResult => {
+    const imports = componentContent
+        .match(/import[^(;|\r?\n|\r)]+/g)
+        ?.map(importStatement => esprima.parseModule(importStatement).body[0]);
+
+    return imports?.map(body => {
+        // @ts-ignore
+        const defaultImportInfo = body.specifiers.find(specifier => specifier.type === 'ImportDefaultSpecifier');
+        // @ts-ignore
+        const destructingImportsInfo = body.specifiers.filter(specifier => specifier.type === 'ImportSpecifier');
+        return ({
+            defaultImport: defaultImportInfo ? defaultImportInfo.local.name : undefined,
+            // @ts-ignore
+            destructingImports: destructingImportsInfo.map(specifier => specifier.local.name),
+            // @ts-ignore
+            from: body.source.value
+        })
+});
 };
