@@ -25,6 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
 			return vscode.window.showErrorMessage('No text selected');
 		}
 		const fileContent = editor.document.getText();
+		const fileExtension = path.basename(editor.document.fileName).split('.').pop();
 		const folderPath = path.dirname(editor.document.fileName); // get the open folder path
 
 		// Prompt for new component Name
@@ -71,7 +72,7 @@ export const ${newComponentName} = ({${newComponentInfo.props?.join(', ')}}) => 
 				builder.insert(new vscode.Position(0, 0), `import { ${newComponentName} } from './${newComponentFileName}'\n`);
 			})
 				.then(() => {
-					fs.writeFile(path.join(folderPath, `${newComponentFileName}.jsx`), newComponentContent, (err) => {
+					fs.writeFile(path.join(folderPath, `${newComponentFileName}.${fileExtension}`), newComponentContent, (err) => {
 						if (err) {
 							return vscode.window.showErrorMessage('Something went wrong while writing the file');
 						}
