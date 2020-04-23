@@ -1,7 +1,7 @@
 {
-	"name": "react-smart-component-extractor",
-	"displayName": "React Smart Component Extractor",
-	"description": "Extract the selected code to a new component",
+	"name": "smart-react-component-extractor",
+	"displayName": "Smart React Component Extractor",
+	"description": "Extract the selected code to a new component in a few clicks. The extension will take care of all imports and props for you.",
 	"version": "0.0.2",
 	"engines": {
 		"vscode": "^1.42.0"

@@ -1,6 +1,6 @@
-# React Smart Component Extractor
+# Smart React Component Extractor
 
-![preview](https://github.com/k1og/React-Smart-Component-Extractor/blob/master/preview.gif?raw=true)
+![preview](https://github.com/k1og/Smart-React-Component-Extractor/blob/master/preview.gif?raw=true)
 
 ## Usage
 
@@ -8,7 +8,7 @@
 2. Ctrl + Shift + P to run command pallete
 3. Select "Smart Extract React Component"
 4. Input new component name
-5. Your new component is created. All imports and props are handled by the React Smart Component Extractor!!!
+5. Your new component is created. All imports and props are handled by the Smart React Component Extractor!!!
 
 ## Motivation
 
