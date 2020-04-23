@@ -2,7 +2,20 @@
 	"name": "smart-react-component-extractor",
 	"displayName": "Smart React Component Extractor",
 	"description": "Extract the selected code to a new component in a few clicks. The extension will take care of all imports and props for you.",
+	"icon": "logo.png",
+	"author": {
+		"name": "klog",
+		"url": "https://github.com/k1og"
+	},
+	"publisher": "klog",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/k1og/Smart-React-Component-Extractor"
+	},
 	"version": "0.0.2",
+	"bugs": {
+		"url": "https://github.com/k1og/Smart-React-Component-Extractor/issues"
+	},
 	"engines": {
 		"vscode": "^1.42.0"
 	},
@@ -45,5 +58,6 @@
 	},
 	"dependencies": {
 		"esprima": "^4.0.1"
-	}
+	},
+	"keywords": ["react", "extract", "component", "refactor", "javascript"]
 }
