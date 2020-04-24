@@ -1,11 +1,11 @@
 import * as esprima from 'esprima';
 
-interface PraseJSXResult {
+export interface PraseJSXResult {
     props?: Array<string>
     components?: Array<string>
 }
 
-type ParseImportsResult = Array<{
+export type ParseImportsResult = Array<{
     defaultImport?: string
     destructingImports: Array<string>
     from: string
@@ -54,7 +54,7 @@ export const parseJSX = (componentBody: string): PraseJSXResult => {
     return { components, props };
 };
 
-export const parseImports = (componentContent: string): ParseImportsResult => {
+export const parseImports = (componentContent: string): ParseImportsResult  | undefined => {
     const imports = componentContent
         .match(/import[^(;|\r?\n|\r)]+/g)
         ?.map(importStatement => esprima.parseModule(importStatement).body[0]);

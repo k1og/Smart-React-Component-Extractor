@@ -12,7 +12,7 @@
 
 ## Motivation
 
-It’s not always possible to keep code clean and declarative. After a dozen commits, your components become huge and unreadable. And then comes refactoring. You split component into smaller ones. It takes time. You can't just Ctrl-X Ctrl-V. So I decided to write extension, which will help you refactor your React components
+It’s not always possible to keep code clean and declarative. After a dozen commits, your components become huge and unreadable. And then comes refactoring. You split component into smaller ones. It takes time. You can't just Ctrl-X Ctrl-V. So I decided to write extension, which will help you refactor React components
 
 ## Inspired by
 
