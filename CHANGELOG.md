@@ -8,3 +8,8 @@
 
 ### Added
 - Error messages
+
+## [0.0.1]
+
+### Fix
+- Fixed imports with break line
