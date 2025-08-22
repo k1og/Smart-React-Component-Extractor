@@ -70,5 +70,27 @@ suite('Imports Parser Test Suite', () => {
             }
         ]);
     });
-    
+
+    test('Default and destructing imports with line break', () => {
+        const comp = `
+            import React
+             from "react";
+            import {
+                formatWithIsPositive,
+                formatWithIsNotPositive,
+            } from '../../lib/util/formatWithColor'
+        `;
+        assert.deepStrictEqual(parseImports(comp), [
+            {
+            defaultImport: 'React',
+            destructingImports: [],
+            from: 'react'
+            },
+            {
+                defaultImport: undefined,
+                destructingImports: ['formatWithIsPositive', 'formatWithIsNotPositive'],
+                from: '../../lib/util/formatWithColor'
+            }
+        ]);
+    });
 });

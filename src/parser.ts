@@ -56,7 +56,7 @@ export const parseJSX = (componentBody: string): PraseJSXResult => {
 
 export const parseImports = (componentContent: string): ParseImportsResult  | undefined => {
     const imports = componentContent
-        .match(/import[^(;|\r?\n|\r)]+/g)
+        .match(/import[^(;|\r?\r)|'|"]+('|")(.*)('|")/g)
         ?.map(importStatement => esprima.parseModule(importStatement).body[0]);
 
     return imports?.map(body => {
